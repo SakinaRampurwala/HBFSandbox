@@ -1,0 +1,272 @@
+<apex:page showHeader="false" standardController="UpgradeBatch__c" standardStylesheets="false" extensions="fM2UpgradeManager" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+  <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>fM1-to-fM2 Upgrade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <apex:slds />
+  </head>
+
+  <body>
+
+    <!-- REQUIRED SLDS WRAPPER -->
+    <div class="slds-scope">
+      <input style ="display: none" id="upgradeBatchId" type="text" value="{!UpgradeBatch__c.Id}"> </input>
+
+      <div id="responseErrors" class="slds-text-color_error"></div>
+      <div > <div class="slds-media__body slds-p-top--medium"> <h1>fM1-to-fM2 Upgrade</h1> </div> </div>
+
+      <table style="width:100%;" cellpadding="5" >
+        <col style="width:40%"> </col>
+        <col style="width:60%"> </col>
+        <tbody>
+          <tr> 
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeContactsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeContacts()">Upgrade Contacts</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="contactResults" /> </div> </td>
+          </tr>
+          <tr>
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeAccountsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeAccounts()">Upgrade Accounts</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="accountResults" /> </div> </td>
+          </tr>
+          <tr> 
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeBenefitsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeBenefits()">Upgrade Benefits</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="benefitResults" /> </div> </td>
+          </tr>
+          <tr>
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeCampaignsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeCampaigns()">Upgrade Campaigns</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="campaignResults" /> </div> </td>
+          </tr>
+          <tr> 
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeOpportunitiesButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeOpportunities()">Upgrade Contacts</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="opportunityResults" /> </div> </td>
+          </tr>
+          <tr>
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradePaymentsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradePayments()">Upgrade Accounts</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="paymentResults" /> </div> </td>
+          </tr>
+          <tr> 
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeReceiptsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeReceipts()">Upgrade Benefits</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="receiptResults" /> </div> </td>
+          </tr>
+          <tr> 
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeTransactionsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeTransactions()">Upgrade Transactions</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="transactionResults" /> </div> </td>
+          </tr>
+          <tr>
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradePaymentProcessorsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradePaymentProcessors()">Upgrade Campaigns</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="paymentProcessorResults" /> </div> </td>
+          </tr>
+          <tr>
+            <td> <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="upgradeOpportunityReceiptsButton" class="slds-button slds-button--brand slds-m-top--medium" onclick="upgradeOpportunityReceipts()">Upgrade Opportunity Receipts</button> </div> </td>
+            <td> <div class="slds-grid slds-grid--align-left slds-p-top--large slds-text-color_success"> <div id="opportunityReceiptsResults" /> </div> </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="slds-grid slds-grid--align-center"> <button style ="width: 80%" type="button" id="refreshStatusButton" class="slds-button slds-button--brand slds-m-top_xx-large" onclick="refreshStatus()">Refresh</button> </div>
+
+      <div class="slds-grid slds-grid--align-center slds-p-top--medium slds-text-color_success">
+        <div id="showResultHere" />
+      </div>
+
+      <div class="slds-grid slds-grid--align-center slds-p-top--medium slds-text-color_error">
+        <div id="showErrorHere" />
+      </div>
+
+    </div>
+    <!-- / REQUIRED SLDS WRAPPER -->
+
+    <!-- JAVASCRIPT -->
+    <script type="text/javascript">
+      var upgradeBatchId                  = document.getElementById("upgradeBatchId");
+
+      var upgradeContactsButton           = document.getElementById("upgradeContactsButton");
+      var upgradeAccountsButton           = document.getElementById("upgradeAccountsButton");
+      var upgradeBenefitsButton           = document.getElementById("upgradeBenefitsButton");
+      var upgradeCampaignsButton          = document.getElementById("upgradeCampaignsButton");
+      var upgradeOpportunitiesButton      = document.getElementById("upgradeOpportunitiesButton");
+      var upgradePaymentsButton           = document.getElementById("upgradePaymentsButton");
+      var upgradeReceiptsButton           = document.getElementById("upgradeReceiptsButton");
+      var upgradeTransactionsButton       = document.getElementById("upgradeTransactionsButton");
+      var upgradePaymentProcessorsButton  = document.getElementById("upgradePaymentProcessorsButton");
+      var upgradeOpportunityReceiptsButton  = document.getElementById("upgradeOpportunityReceiptsButton");
+
+      var refreshStatusButton  = document.getElementById("refreshStatusButton");
+
+      var contactResults                  = document.getElementById("contactResults");
+      var accountResults                  = document.getElementById("accountResults");
+      var benefitResults                  = document.getElementById("benefitResults");
+      var campaignResults                 = document.getElementById("campaignResults");
+      var opportunityResults              = document.getElementById("opportunityResults");
+      var paymentResults                  = document.getElementById("paymentResults");
+      var receiptResults                  = document.getElementById("receiptResults");
+      var transactionResults              = document.getElementById("transactionResults");
+      var paymentProcessorResults         = document.getElementById("paymentProcessorResults");
+      var opportunityReceiptsResults         = document.getElementById("opportunityReceiptsResults");
+
+      var message = document.getElementById("showResultHere");
+      var error = document.getElementById("showErrorHere");
+      var errorVal = false;
+
+      function upgradeContacts() {
+        upgradeContactsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeContacts}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { contactResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeContacts
+
+      function upgradeAccounts() {
+        upgradeAccountsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeAccounts}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { accountResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeAccounts
+
+      function upgradeBenefits() {
+        upgradeBenefitsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeBenefits}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { benefitResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeBenefits
+
+      function upgradeCampaigns() {
+        upgradeCampaignsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeCampaigns}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { campaignResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeCampaigns
+
+      function upgradeOpportunities() {
+        upgradeOpportunitiesButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeOpportunities}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { opportunityResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeOpportunities
+
+      function upgradePayments() {
+        upgradePaymentsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradePayments}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { paymentResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradePayments
+
+      function upgradeReceipts() {
+        upgradeReceiptsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeReceipts}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { receiptResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeReceipts
+
+      function upgradeTransactions() {
+        upgradeTransactionsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeTransactions}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { transactionResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeTransactions
+
+      function upgradePaymentProcessors() {
+        upgradePaymentProcessorsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradePaymentProcessors}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { paymentProcessorResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradePaymentProcessors
+
+      function upgradeOpportunityReceipts() {
+        upgradeOpportunityReceiptsButton.disabled = true;
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeOpportunityReceipts}', upgradeBatchId.value, 
+          function(result, event){
+            if (event.status) { opportunityReceiptsResults.innerHTML = result.responseString; }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeOpportunityReceipts
+
+      function upgradeSetup() {
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeSetup}', 
+          function(orgInfo, event){
+            if (event.status) { 
+              upgradeContactsButton.innerHTML = orgInfo.contactInfo; 
+              upgradeAccountsButton.innerHTML = orgInfo.accountInfo; 
+              upgradeBenefitsButton.innerHTML = orgInfo.benefitInfo; 
+              upgradeCampaignsButton.innerHTML = orgInfo.campaignInfo; 
+              upgradeOpportunitiesButton.innerHTML = orgInfo.opportunityInfo; 
+              upgradePaymentsButton.innerHTML = orgInfo.paymentInfo; 
+              upgradeReceiptsButton.innerHTML = orgInfo.receiptInfo; 
+              upgradeTransactionsButton.innerHTML = orgInfo.transactionInfo; 
+              upgradePaymentProcessorsButton.innerHTML = orgInfo.paymentProcessorInfo; 
+            }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeSetup
+
+      function upgradeInitialize() {
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.fM2UpgradeManager.upgradeInitialize}', upgradeBatchId.value,
+          function(infoList, event){
+            if (event.status) { 
+              if (infoList.length > 0) {
+                for (var c in infoList) {
+                  if(infoList[c].Type == 'Contact') { if(infoList[c].Status != 'Created') {  upgradeContactsButton.disabled = true;  } else { upgradeContactsButton.disabled = false; } contactResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Account') { if(infoList[c].Status != 'Created') { upgradeAccountsButton.disabled = true; } else { upgradeAccountsButton.disabled = false; } accountResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Benefit') { if(infoList[c].Status != 'Created') { upgradeBenefitsButton.disabled = true; } else { upgradeBenefitsButton.disabled = false; } benefitResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Campaign') { if(infoList[c].Status != 'Created') { upgradeCampaignsButton.disabled = true; } else { upgradeCampaignsButton.disabled = false; } campaignResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Opportunity') { if(infoList[c].Status != 'Created') { upgradeOpportunitiesButton.disabled = true; } else { upgradeOpportunitiesButton.disabled = false; } opportunityResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Payment') { if(infoList[c].Status != 'Created') { upgradePaymentsButton.disabled = true; } else { upgradePaymentsButton.disabled = false; } paymentResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Receipt') { if(infoList[c].Status != 'Created') { upgradeReceiptsButton.disabled = true; } else { upgradeReceiptsButton.disabled = false; } receiptResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Transaction') { if(infoList[c].Status != 'Created') { upgradeTransactionsButton.disabled = true; } else { upgradeTransactionsButton.disabled = false; } transactionResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Payment Processor') { if(infoList[c].Status != 'Created') { upgradePaymentProcessorsButton.disabled = true; } else { upgradePaymentProcessorsButton.disabled = false; } paymentProcessorResults.innerHTML = infoList[c].message; }
+                  if(infoList[c].Type == 'Opportunity Receipt') { if(infoList[c].Status != 'Created') { upgradeOpportunityReceiptsButton.disabled = true; } else { upgradeOpportunityReceiptsButton.disabled = false; } opportunityReceiptsResults.innerHTML = infoList[c].message; }
+                }
+              }
+            }
+            else if (event.type === 'exception') { document.getElementById("responseErrors").innerHTML = event.message + "<br/>\n<pre>" + event.where + "</pre>"; }
+            else { document.getElementById("responseErrors").innerHTML = event.message; } }, {escape: true} 
+        );
+      } // end upgradeInitialize
+
+      function refreshStatus() {
+        upgradeSetup();
+        upgradeInitialize();
+      } // end refreshStatus
+
+      window.onload = function () { 
+        upgradeSetup();
+        upgradeInitialize();
+      };
+
+    </script>
+    <!-- / JAVASCRIPT -->
+
+  </body>
+
+  </html>
+</apex:page>
